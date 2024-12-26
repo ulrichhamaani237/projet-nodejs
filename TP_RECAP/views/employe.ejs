@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculer Somme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #74ebd5;
+            outline: none;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #74ebd5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #5dbcd2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #74ebd5;
+            color: #ffffff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Gestion des Employers</h1>
+        <form id="sumForm" method="post" action="/insert">
+            <div class="form-group">
+                <label for="matricule">Matricule:</label>
+                <input type="number" id="mat" name="mat" value="" required>
+            </div>
+            <div class="form-group">
+                <label for="number2">Nom:</label>
+                <input type="text" id="name" name="name" value="" required>
+            </div>
+            <div class="form-group">
+                <label for="result">Salaire:</label>
+                <input type="number" id="sal" name="sal" value="" >
+            </div>
+            <input type="submit" class="button" value="Insert" name="btn">
+        </form>
+        <table>
+            <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Salaire</th>
+                <th>Action</th>
+            </tr>
+           <% emps.forEach((items) => { %>
+            <tr>
+                <td><%= items.mat %></td>
+                <td><%= items.name %></td>
+                <td><%= items.sal %></td>
+                <td>
+                    <form action="/delete/<%=items.mat%>">
+                        <button type="submit" 
+                        onclick="return confirm('Est vous sure de voulaire supprimer <%=items.name%>?') " >
+                        Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+        </table>
+    </div>
+
+</body>
+</html>

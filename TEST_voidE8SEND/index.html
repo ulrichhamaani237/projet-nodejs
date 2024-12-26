@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie Vocale</title>
+</head>
+<body>
+    <h1>Envoyer un message vocal</h1>
+    <button id="startRecording">Démarrer l'enregistrement</button>
+    <button id="stopRecording" disabled>Arrêter l'enregistrement</button>
+    <audio id="audioPlayback" controls></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+        const startRecordingButton = document.getElementById('startRecording');
+        const stopRecordingButton = document.getElementById('stopRecording');
+        const audioPlayback = document.getElementById('audioPlayback');
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // Démarrer l'enregistrement audio
+        startRecordingButton.addEventListener('click', async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                audioPlayback.src = audioUrl;
+
+                // Envoi du fichier audio au serveur
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'message.wav');
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                const fileUrl = result.fileUrl;
+
+                // Envoyer le message vocal à l'autre utilisateur
+                socket.emit('sendVoiceMessage', { fileUrl });
+            };
+
+            mediaRecorder.start();
+            startRecordingButton.disabled = true;
+            stopRecordingButton.disabled = false;
+        });
+
+        // Arrêter l'enregistrement audio
+        stopRecordingButton.addEventListener('click', () => {
+            mediaRecorder.stop();
+            startRecordingButton.disabled = false;
+            stopRecordingButton.disabled = true;
+        });
+
+        // Recevoir le message vocal de l'autre utilisateur
+        socket.on('receiveVoiceMessage', (data) => {
+            audioPlayback.src = data.fileUrl;
+        });
+    </script>
+</body>
+</html>

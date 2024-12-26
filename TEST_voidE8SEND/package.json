@@ -1,19 +1,19 @@
 {
-  "name": "projet-nodejs",
+  "name": "test_voide8send",
   "version": "1.0.0",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "express": "^4.21.2",
     "ffmpeg": "^0.0.4",
     "multer": "^1.4.5-lts.1",
-    "prompt-sync": "^4.2.0",
     "socket.io": "^4.8.1"
-  }
+  },
+  "description": ""
 }
